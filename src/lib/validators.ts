@@ -19,7 +19,7 @@ export type Mentor = z.infer<typeof mentorSchema>;
 export const registrationSchema = z.object({
   id: z.string(),
   mentorId: z.string(),
-  name: z.string(),
+  alias: z.string(),
   createdAt: z.string(),
   status: z.enum(["confirmed", "cancelled"]),
 });
@@ -28,7 +28,11 @@ export type Registration = z.infer<typeof registrationSchema>;
 
 export const signupFormSchema = z.object({
   mentorId: z.string(),
-  name: z.string().min(1, "Name is required").max(100),
+  alias: z
+    .string()
+    .min(1, "Alias is required")
+    .max(50)
+    .regex(/^[a-zA-Z0-9._-]+$/, "Alias only — no @microsoft.com"),
 });
 
 export type SignupFormData = z.infer<typeof signupFormSchema>;

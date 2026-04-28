@@ -91,7 +91,7 @@ export default function AdminPage() {
             <thead>
               <tr className="border-b border-gold-trace">
                 <th className="px-4 py-4 text-left text-[0.65rem] uppercase tracking-[0.25em] text-gold-dark font-normal">
-                  Name
+                  Alias
                 </th>
                 <th className="px-4 py-4 text-left text-[0.65rem] uppercase tracking-[0.25em] text-gold-dark font-normal">
                   Mentor
@@ -110,7 +110,7 @@ export default function AdminPage() {
                   key={reg.id}
                   className="border-b border-gold-trace hover:bg-[rgba(232,212,162,0.03)] transition-colors duration-300"
                 >
-                  <td className="px-4 py-4 text-gold-light">{reg.name}</td>
+                  <td className="px-4 py-4 text-gold-light">{reg.alias}</td>
                   <td className="px-4 py-4 text-gold-mid italic">
                     {reg.mentorId}
                   </td>

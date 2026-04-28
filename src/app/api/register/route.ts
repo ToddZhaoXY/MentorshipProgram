@@ -32,6 +32,31 @@ export async function POST(request: NextRequest) {
 
     const registration = addRegistration(parsed.data);
 
+    // Fire-and-log: forward to Power Automate so it lands in SharePoint.
+    // Local JSON is the source of truth; SharePoint failure should not block the user.
+    const flowUrl = process.env.POWER_AUTOMATE_URL;
+    if (flowUrl) {
+      try {
+        const res = await fetch(flowUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mentorName: mentor.name,
+            menteeAlias: parsed.data.alias,
+          }),
+        });
+        if (!res.ok) {
+          console.error(
+            "Power Automate POST failed:",
+            res.status,
+            await res.text()
+          );
+        }
+      } catch (err) {
+        console.error("Power Automate POST error:", err);
+      }
+    }
+
     return NextResponse.json(
       { message: "Registration successful", registration },
       { status: 201 }

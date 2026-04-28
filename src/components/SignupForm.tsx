@@ -51,7 +51,7 @@ export function SignupForm({
     const formData = new FormData(e.currentTarget);
     const data = {
       mentorId,
-      name: formData.get("name") as string,
+      alias: ((formData.get("alias") as string) || "").trim().toLowerCase(),
     };
 
     const parsed = signupFormSchema.safeParse(data);
@@ -91,16 +91,22 @@ export function SignupForm({
   return (
     <form onSubmit={handleSubmit} className="flex gap-3">
       <div className="flex-1">
-        <input
-          id="name"
-          name="name"
-          placeholder="Your full name"
-          required
-          className="w-full bg-transparent border border-gold-trace px-4 py-3 text-gold-light placeholder:text-gold-dark/50 focus:outline-none focus:border-gold-mid transition-colors duration-300"
-        />
-        {errors.name && (
+        <div className="flex items-center border border-gold-trace focus-within:border-gold-mid transition-colors duration-300">
+          <input
+            id="alias"
+            name="alias"
+            placeholder="alias"
+            required
+            autoComplete="off"
+            className="w-full bg-transparent px-4 py-3 text-gold-light placeholder:text-gold-dark/50 focus:outline-none"
+          />
+          <span className="pr-4 text-gold-dark text-[0.85rem] italic select-none">
+            @microsoft.com
+          </span>
+        </div>
+        {errors.alias && (
           <p className="text-[0.8rem] text-[#c4795a] mt-1 italic">
-            {errors.name}
+            {errors.alias}
           </p>
         )}
       </div>

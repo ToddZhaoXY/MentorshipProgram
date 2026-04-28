@@ -16,7 +16,7 @@ export function addRegistration(data: SignupFormData): Registration {
   const registration: Registration = {
     id: uuidv4(),
     mentorId: data.mentorId,
-    name: data.name,
+    alias: data.alias,
     createdAt: new Date().toISOString(),
     status: "confirmed",
   };
