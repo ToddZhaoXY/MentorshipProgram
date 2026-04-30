@@ -18,14 +18,49 @@ export interface MentorWithSlots extends Mentor {
   slotsRemaining: number;
 }
 
-export function getMentorsWithSlots(): MentorWithSlots[] {
+interface SharePointRow {
+  mentors?: string;
+  Mentees?: string;
+}
+
+async function fetchSharePointCounts(): Promise<Map<string, number>> {
+  const url = process.env.POWER_AUTOMATE_SLOTS_URL;
+  if (!url) return new Map();
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) {
+      console.error("Slot counts fetch failed:", res.status);
+      return new Map();
+    }
+    const rows: SharePointRow[] = await res.json();
+    const counts = new Map<string, number>();
+    for (const row of rows) {
+      const name = row.mentors?.trim();
+      if (!name) continue;
+      const mentees = (row.Mentees || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      counts.set(name, mentees.length);
+    }
+    return counts;
+  } catch (err) {
+    console.error("Slot counts fetch error:", err);
+    return new Map();
+  }
+}
+
+export async function getMentorsWithSlots(): Promise<MentorWithSlots[]> {
   const mentors = getMentors();
-  const registrations = getRegistrations();
+  const localRegs = getRegistrations();
+  const remoteCounts = await fetchSharePointCounts();
 
   return mentors.map((mentor) => {
-    const taken = registrations.filter(
+    const localTaken = localRegs.filter(
       (r) => r.mentorId === mentor.id && r.status === "confirmed"
     ).length;
+    const remoteTaken = remoteCounts.get(mentor.name) ?? 0;
+    const taken = Math.max(localTaken, remoteTaken);
     return {
       ...mentor,
       slotsRemaining: Math.max(0, mentor.maxSlots - taken),
@@ -33,6 +68,9 @@ export function getMentorsWithSlots(): MentorWithSlots[] {
   });
 }
 
-export function getMentorWithSlots(id: string): MentorWithSlots | undefined {
-  return getMentorsWithSlots().find((m) => m.id === id);
+export async function getMentorWithSlots(
+  id: string
+): Promise<MentorWithSlots | undefined> {
+  const all = await getMentorsWithSlots();
+  return all.find((m) => m.id === id);
 }

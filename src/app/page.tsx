@@ -4,8 +4,8 @@ import { getMentorsWithSlots } from "@/lib/mentors";
 
 export const dynamic = "force-dynamic";
 
-export default function HomePage() {
-  const mentors = getMentorsWithSlots();
+export default async function HomePage() {
+  const mentors = await getMentorsWithSlots();
 
   return (
     <>

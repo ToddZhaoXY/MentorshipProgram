@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const mentor = getMentorWithSlots(parsed.data.mentorId);
+    const mentor = await getMentorWithSlots(parsed.data.mentorId);
     if (!mentor) {
       return NextResponse.json(
         { error: "Mentor not found" },

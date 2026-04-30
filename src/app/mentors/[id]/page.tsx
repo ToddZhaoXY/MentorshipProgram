@@ -12,7 +12,7 @@ export default async function MentorDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const mentor = getMentorWithSlots(id);
+  const mentor = await getMentorWithSlots(id);
 
   if (!mentor) {
     notFound();

@@ -3,7 +3,7 @@ import { getMentorsWithSlots } from "@/lib/mentors";
 
 export async function GET() {
   try {
-    const mentors = getMentorsWithSlots();
+    const mentors = await getMentorsWithSlots();
     return NextResponse.json(mentors);
   } catch {
     return NextResponse.json(
